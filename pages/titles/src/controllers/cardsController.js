@@ -25,25 +25,14 @@ export default class CardsController {
 
   #onSearchInput(keyword) {
     this.#view.clearCards()
-
-    console.log('activating blocking operation...')
-    console.time('blocking-op')
-    // blocking function
-    for (let counter = 0; counter < 1e5; counter++) console.log()
-    console.timeEnd('blocking-op')
-
-    console.log('blocking operation freed up ...')
-
     this.addCards(keyword)
   }
 
   async init() {
     await this.#loadDB()
-    this.#view.configureOnSearchInput(
-      this.#onSearchInput.bind(this)
-    )
+    this.#view.configureOnSearchInput(this.#onSearchInput.bind(this))
 
-    this.addCards("")
+    this.addCards('')
   }
 
   static async initialize(deps) {
