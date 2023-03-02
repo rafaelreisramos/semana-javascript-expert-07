@@ -51,6 +51,7 @@ export default class Service {
 
     if (!predictions.length) return false
     for (const prediction of predictions) {
+      // EAR: Eye Aspect Ratio
       // Right eye parameters
       const lowerRight = prediction.annotations.rightEyeUpper0
       const upperRight = prediction.annotations.rightEyeLower0
@@ -61,11 +62,21 @@ export default class Service {
       const leftEAR = this.#getEAR(upperLeft, lowerLeft)
 
       // True if the eye is closed
-      const blinked = leftEAR <= EAR_THRESHOLD && rightEAR <= EAR_THRESHOLD
+      const leftEyeClosed = leftEAR <= EAR_THRESHOLD
+      const rightEyeClosed = rightEAR <= EAR_THRESHOLD
+
+      const blinked = leftEyeClosed || rightEyeClosed
       if (!blinked) continue
       if (!shouldRun()) continue
 
-      return blinked
+      const leftBlinked = leftEyeClosed && !rightEyeClosed
+      if (leftBlinked) return 'left'
+
+      const rightBlinked = !leftEyeClosed && rightEyeClosed
+      if (rightBlinked) return 'right'
+
+      const bothBlinked = leftEyeClosed && rightEyeClosed
+      if (bothBlinked) return 'both'
     }
     return false
   }

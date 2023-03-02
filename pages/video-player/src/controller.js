@@ -2,7 +2,7 @@ export default class Controller {
   #view
   #camera
   #worker
-  #blinks = 0
+  #blinks = { right: 0, left: 0, both: 0 }
   constructor({ view, worker, camera }) {
     this.#view = view
     this.#view.configureOnBtnClick(this.onBtnStart.bind(this))
@@ -26,8 +26,10 @@ export default class Controller {
         return
       }
       const blinked = data.blinked
-      this.#blinks += blinked
-      this.#view.togglePlayVideo()
+      this.#blinks[blinked] += 1
+      if (blinked === 'both') {
+        this.#view.togglePlayVideo()
+      }
     }
 
     return {
@@ -51,13 +53,21 @@ export default class Controller {
   }
 
   log(text) {
-    const times = `    - blinked times: ${this.#blinks}`
-    this.#view.log(`status: ${text}`.concat(this.#blinks ? times : ''))
+    const times = `    - blinked times - both: ${this.#blinks['both']}, left: ${
+      this.#blinks['left']
+    }, right: ${this.#blinks['right']}`
+    this.#view.log(
+      `status: ${text}`.concat(
+        this.#blinks['both'] || this.#blinks['left'] || this.#blinks['right']
+          ? times
+          : ''
+      )
+    )
   }
 
   onBtnStart() {
     this.log('initializing detection ...')
-    this.#blinks = 0
+    this.#blinks = { right: 0, left: 0, both: 0 }
     this.loop()
   }
 }
