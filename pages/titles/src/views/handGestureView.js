@@ -7,7 +7,7 @@ export default class HandGestureView {
   constructor({ fingerLookupIndexes, styler }) {
     this.#handsCanvas.width = globalThis.screen.availWidth
     this.#handsCanvas.height = globalThis.screen.availHeight
-    this.#canvasContext.strokeStyle = 'white'
+    this.#canvasContext.strokeStyle = 'lightgray'
     this.#canvasContext.lineWidth = 8
     this.#canvasContext.lineJoin = 'round'
     this.#fingerLookupIndexes = fingerLookupIndexes
